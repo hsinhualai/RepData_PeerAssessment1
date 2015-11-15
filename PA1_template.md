@@ -1,14 +1,10 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
-```{r, echo = TRUE}
+
+```r
 ## Set the working directory
 setwd("/Users/hsinhua/datasciencecoursera/RepData_PeerAssessment1")
 
@@ -18,12 +14,34 @@ data <- read.csv("activity.csv")
 ## We first import all the packages we will use in this assignment
 library(plyr)
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following objects are masked from 'package:plyr':
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize
+## 
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 library(reshape2)
 library(lattice)
 library(timeDate)
 ```
 ## What is mean total number of steps taken per day?
-```{r, echo = TRUE}
+
+```r
 mdata <- melt(data, id = "date", measure.vars = "steps", na.rm = TRUE)
 datacast <- dcast(mdata, date ~ variable, sum)
 ## datacast gives the data form we need columns are date and total steps
@@ -31,7 +49,11 @@ datacast <- dcast(mdata, date ~ variable, sum)
 ## Let's make a histogram
 
 hist(datacast[,2], xlab = "total number of steps", main = "Histogram of total number of steps per day")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+```r
 ## Let's give the mean and median of the total number of steps per day
 
 Mean = mean(datacast[,2])
@@ -39,22 +61,37 @@ Median = median(datacast[,2])
 
 ## Let's print out the mean value
 print(Mean)
+```
 
+```
+## [1] 10766.19
+```
+
+```r
 ## Let's print out the median value
 print(Median)
+```
+
+```
+## [1] 10765
 ```
 
 
 ## What is the average daily activity pattern?
 
-```{r, echo = TRUE}
+
+```r
 ## Again we use melt and dcast to find the data form we need
 mdata_interval <- melt(data, id = "interval", measure.vars = "steps", na.rm = TRUE)
 datacast_interval <- dcast(mdata_interval, interval ~ variable, mean)
 
 ## Let's first make a time series plot
 with(datacast_interval, plot(interval, steps, type="l", xlab = "Interval", ylab = "Average steps per interval across all days", main="Average daily activity pattern"))
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
 ## Rearrange the data in desc(average_steps)
 datacast_interval <- arrange(datacast_interval, desc(steps))
 
@@ -62,14 +99,25 @@ datacast_interval <- arrange(datacast_interval, desc(steps))
 print(datacast_interval$interval[1])
 ```
 
+```
+## [1] 835
+```
+
 ## Imputing missing values
 
-```{r, echo = TRUE}
+
+```r
 ## Calculate and report the total number of missing values:
 mis_val <- is.na(data$steps)
 number_misval <- sum(mis_val)
 print(number_misval)  ## give the total number of missing values
+```
 
+```
+## [1] 2304
+```
+
+```r
 ## Let's use the strategy suggested by the assignment
 ## We replace the missing value with its mean for that 5-minute interval
 
@@ -85,7 +133,13 @@ newdata <- data
 ## Let's use the plyr package to join the subdata containing na and 
 ## the datacast_interval data with mean steps for each interval
 joinsubdata <- arrange(join(newdata[na_row,], datacast_interval), interval)
+```
 
+```
+## Joining by: interval
+```
+
+```r
 ## rearrange the subdata by date
 joinsubdata <- arrange(joinsubdata, date)
 
@@ -103,7 +157,11 @@ mnewdata <- melt(newdata, id = "date", measure.vars = "steps")
 newdatacast <- dcast(mnewdata, date ~ variable, sum)
 
 hist(newdatacast[,2], xlab = "total number of steps in new data")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
+```r
 ## Let's give the new mean and median of the total number of steps per day
 
 new_Mean = mean(newdatacast[,2])
@@ -111,14 +169,21 @@ new_Median = median(newdatacast[,2])
 
 ## Let's report the new Mean
 print(new_Mean)
+```
 
+```
+## [1] 10766.19
+```
+
+```r
 ## Let's report the new Median
 ```
 We can see that the impact of imputing missing data only shift a little bit of median value if we replace the missing values with the mean of its corresponding 5-minute interval steps.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r}
+
+```r
 ## Let's first create a new column from the date column
 newdata$day_type <- as.character(newdata$date)
 
@@ -135,5 +200,6 @@ newdata_cast <- dcast(newdata_melt, interval + day_type ~ variable, mean)
 
 ## Let's us lattice for plotting system
 xyplot(steps ~ interval |day_type, data = newdata_cast, layout = c (1,2), type = "l", ylab = "Number of steps")
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
