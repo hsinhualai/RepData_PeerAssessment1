@@ -116,11 +116,9 @@ print(number_misval)  ## give the total number of missing values
 ```
 ## [1] 2304
 ```
+For replacing the missing values, let's use the strategy suggested by the assignment to replace the missing value with its mean value for that 5-minute interval
 
 ```r
-## Let's use the strategy suggested by the assignment
-## We replace the missing value with its mean for that 5-minute interval
-
 ## We first select the rows of NA
 na_row <- which(mis_val == TRUE)
 
@@ -156,10 +154,10 @@ newdata$steps[na_row] <- meanstep_data$steps_mean
 mnewdata <- melt(newdata, id = "date", measure.vars = "steps")
 newdatacast <- dcast(mnewdata, date ~ variable, sum)
 
-hist(newdatacast[,2], xlab = "total number of steps in new data")
+hist(newdatacast[,2], xlab = "total number of steps in new data", main = "Histogram of total number of steps after missing values are imputed")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
 
 ```r
 ## Let's give the new mean and median of the total number of steps per day
@@ -177,6 +175,11 @@ print(new_Mean)
 
 ```r
 ## Let's report the new Median
+print(new_Median)
+```
+
+```
+## [1] 10766.19
 ```
 We can see that the impact of imputing missing data only shift a little bit of median value if we replace the missing values with the mean of its corresponding 5-minute interval steps.
 
@@ -202,4 +205,4 @@ newdata_cast <- dcast(newdata_melt, interval + day_type ~ variable, mean)
 xyplot(steps ~ interval |day_type, data = newdata_cast, layout = c (1,2), type = "l", ylab = "Number of steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 

@@ -69,10 +69,9 @@ print(datacast_interval$interval[1])
 mis_val <- is.na(data$steps)
 number_misval <- sum(mis_val)
 print(number_misval)  ## give the total number of missing values
-
-## Let's use the strategy suggested by the assignment
-## We replace the missing value with its mean for that 5-minute interval
-
+```
+For replacing the missing values, let's use the strategy suggested by the assignment to replace the missing value with its mean value for that 5-minute interval
+```{r, echo = TRUE}
 ## We first select the rows of NA
 na_row <- which(mis_val == TRUE)
 
@@ -102,7 +101,7 @@ newdata$steps[na_row] <- meanstep_data$steps_mean
 mnewdata <- melt(newdata, id = "date", measure.vars = "steps")
 newdatacast <- dcast(mnewdata, date ~ variable, sum)
 
-hist(newdatacast[,2], xlab = "total number of steps in new data")
+hist(newdatacast[,2], xlab = "total number of steps in new data", main = "Histogram of total number of steps after missing values are imputed")
 
 ## Let's give the new mean and median of the total number of steps per day
 
@@ -113,6 +112,7 @@ new_Median = median(newdatacast[,2])
 print(new_Mean)
 
 ## Let's report the new Median
+print(new_Median)
 ```
 We can see that the impact of imputing missing data only shift a little bit of median value if we replace the missing values with the mean of its corresponding 5-minute interval steps.
 
