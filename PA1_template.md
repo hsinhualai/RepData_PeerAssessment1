@@ -39,7 +39,9 @@ library(reshape2)
 library(lattice)
 library(timeDate)
 ```
+
 ## What is mean total number of steps taken per day?
+
 
 ```r
 mdata <- melt(data, id = "date", measure.vars = "steps", na.rm = TRUE)
@@ -75,7 +77,6 @@ print(Median)
 ```
 ## [1] 10765
 ```
-
 
 ## What is the average daily activity pattern?
 
